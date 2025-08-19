@@ -1,0 +1,20 @@
+[project]
+name = "photo-gallery-share"
+version = "0.1.0"
+description = "Django app for photo gallery sharing"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Your Name" }
+]
+dependencies = [
+  "Django>=5.1.7,<6.0",
+  "gunicorn>=21.2,<22.0",
+  "psycopg[binary]>=3.1,<4.0",
+  "whitenoise>=6.6,<7.0"
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+

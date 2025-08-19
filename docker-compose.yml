@@ -1,0 +1,39 @@
+name: gallery-share
+
+x-django: &django
+  build: .
+  working_dir: /app/
+  volumes:
+    - ./app:/app
+  env_file:
+    - ./.env
+  restart: always
+
+
+services:
+  app:
+    <<: *django
+    command: /bin/bash /app/bin/boot.sh
+    ports:
+      - 18008:18008
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./db.env
+    healthcheck:
+      test: pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  
+
+volumes:
+  postgres_data:

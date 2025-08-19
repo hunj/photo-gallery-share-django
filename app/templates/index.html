@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Photo Gallery Share{% endblock %}
+
+{% block content %}
+  <h1>Welcome</h1>
+  <p>This is an HTMX-enabled Django app.</p>
+
+  <article>
+    <header>Current time</header>
+    <div id="time-box" hx-get="{% url 'time-partial' %}" hx-trigger="load, every 5s" hx-swap="outerHTML"></div>
+  </article>
+{% endblock %}
+
+

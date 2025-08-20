@@ -6,6 +6,8 @@ ENV LC_ALL=C.UTF-8
 ENV PYTHONHASHSEED=1
 ENV PYTHONUNBUFFERED=1
 
+ENV POETRY_VIRTUALENVS_CREATE=0
+
 ARG NODE_MAJOR=20
 
 RUN apt-get update && apt-get install -y \
@@ -17,22 +19,16 @@ RUN apt-get update && apt-get install -y \
     vim
 
 RUN pip install --upgrade pip
-RUN pip install uv
+RUN pip install poetry
 
-# Work in /app so uv creates .venv there
 WORKDIR /app
 
-# Copy project metadata first for better caching
 COPY ./pyproject.toml ./
+COPY ./poetry.lock ./
 
-# Install dependencies into /app/.venv
-RUN uv sync
-
-# Ensure venv binaries are on PATH for runtime
-ENV PATH="/app/.venv/bin:$PATH"
+RUN poetry install
 
 # Copy application code
-COPY app /app
-RUN mkdir -p /app/static
+COPY app .
 
 CMD ["bin/boot.sh"]

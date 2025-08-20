@@ -1,21 +1,25 @@
 [project]
-name = "photo-gallery-share"
+name = "photo-gallery-share-django"
 version = "0.1.0"
-description = "Django app for photo gallery sharing"
+description = ""
+authors = [
+    {name = "hunj"}
+]
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [
-  { name = "Your Name" }
-]
 dependencies = [
-  "Django>=5.1.7,<6.0",
-  "gunicorn>=21.2,<22.0",
-  "psycopg[binary]>=3.1,<4.0",
-  "whitenoise>=6.6,<7.0",
-  "django-htmx>=1.21.0,<2.0.0"
+    "django (>=5.2.5,<6.0.0)",
+    "gunicorn (>=23.0.0,<24.0.0)",
+    "psycopg2 (>=2.9.10,<3.0.0)",
+    "django-htmx (>=1.23.2,<2.0.0)"
 ]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.3.0"
+mypy = "^1.17.1"
 
 [build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
-
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

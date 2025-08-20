@@ -5,7 +5,7 @@ description = ""
 authors = [
     {name = "hunj"}
 ]
-readme = "README.md"
+package-mode = false
 requires-python = ">=3.11"
 dependencies = [
     "django (>=5.2.5,<6.0.0)",

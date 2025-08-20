@@ -33,7 +33,12 @@ services:
       timeout: 5s
       retries: 10
 
-  
+  nginx:
+    build: ./nginx
+    ports:
+      - 18000:80
+    depends_on:
+      - app
 
 volumes:
   postgres_data:

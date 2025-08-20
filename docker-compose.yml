@@ -3,8 +3,8 @@ name: gallery-share
 x-django: &django
   build: .
   working_dir: /app/
-  volumes:
-    - ./app:/app
+  # volumes:
+  #   - ./app:/app
   env_file:
     - ./.env
   restart: always
@@ -19,18 +19,11 @@ services:
     expose:
       - 8001
     develop:
-      # Create a `watch` configuration to update the app
-      #
       watch:
-        # Sync the working directory with the `/app` directory in the container
-        - action: sync
-          path: .
-          target: /app
-          # Exclude the project virtual environment
-          ignore:
-            - .venv/
+        - action: sync+restart
+          path: ./app/
+          target: /app/
 
-        # Rebuild the image on changes to the `pyproject.toml`
         - action: rebuild
           path: ./pyproject.toml
 

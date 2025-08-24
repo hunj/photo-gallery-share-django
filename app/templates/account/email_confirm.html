@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account %}
+
+{% block title %}Confirm Email - Photo Gallery{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-envelope-open me-2"></i>Confirm Email
+                </h2>
+            </div>
+            <div class="card-body text-center">
+                {% if confirmation %}
+                    {% user_display confirmation.email_address.user as user_display %}
+                    
+                    <div class="mb-4">
+                        <i class="fas fa-envelope-open fa-3x text-primary mb-3"></i>
+                        <h4>Almost there!</h4>
+                        <p class="text-muted">
+                            Please confirm that <strong>{{ confirmation.email_address.email }}</strong> 
+                            is your email address.
+                        </p>
+                    </div>
+
+                    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-1"></i>Confirm Email Address
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    {% url 'account_email' as email_url %}
+                    
+                    <div class="mb-4">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <h4>Invalid Confirmation Link</h4>
+                        <p class="text-muted">
+                            This confirmation link has expired or is invalid. 
+                            Please request a new confirmation email.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'account_login' %}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-1"></i>Go to Sign In
+                        </a>
+                        <a href="{% url 'account_signup' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-user-plus me-1"></i>Create New Account
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

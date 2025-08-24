@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account %}
+
+{% block title %}Email Management - Photo Gallery{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-envelope me-2"></i>Email Management
+                </h2>
+                <p class="text-muted mb-0 mt-2">Manage your email addresses</p>
+            </div>
+            <div class="card-body">
+                {% if user.emailaddress_set.all %}
+                    <div class="mb-4">
+                        <h5><i class="fas fa-list me-2"></i>Your Email Addresses</h5>
+                        <p class="text-muted">Manage the email addresses associated with your account.</p>
+                    </div>
+
+                    <form action="{% url 'account_email' %}" class="email_list" method="post">
+                        {% csrf_token %}
+                        
+                        {% for emailaddress in user.emailaddress_set.all %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="form-check">
+                                                <input id="email_radio_{{ forloop.counter }}" type="radio" name="email" 
+                                                       {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{% endif %} 
+                                                       value="{{ emailaddress.email }}" class="form-check-input">
+                                                <label class="form-check-label" for="email_radio_{{ forloop.counter }}">
+                                                    {{ emailaddress.email }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {% if emailaddress.verified %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Verified
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>Unverified
+                                                </span>
+                                            {% endif %}
+                                            {% if emailaddress.primary %}
+                                                <span class="badge bg-primary ms-1">
+                                                    <i class="fas fa-star me-1"></i>Primary
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button class="btn btn-secondary me-md-2" type="submit" name="action_remove">
+                                <i class="fas fa-trash me-1"></i>Remove
+                            </button>
+                            <button class="btn btn-primary" type="submit" name="action_primary">
+                                <i class="fas fa-star me-1"></i>Make Primary
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
+                        <h4>No Email Addresses</h4>
+                        <p class="text-muted">You don't have any email addresses configured yet.</p>
+                    </div>
+                {% endif %}
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <h5><i class="fas fa-plus me-2"></i>Add New Email Address</h5>
+                    <p class="text-muted">Add an additional email address to your account.</p>
+                    
+                    <form method="post" action="{% url 'account_email' %}" class="add_email">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        {{ error }}<br>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>New Email Address
+                            </label>
+                            <input type="email" name="{{ form.email.name }}" class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                   id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}" required>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid">
+                            <button name="action_add" type="submit" class="btn btn-success">
+                                <i class="fas fa-plus me-1"></i>Add Email
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

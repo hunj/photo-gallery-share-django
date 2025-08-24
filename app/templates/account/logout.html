@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Sign Out - Photo Gallery{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                </h2>
+            </div>
+            <div class="card-body text-center">
+                <p class="mb-4">
+                    <i class="fas fa-question-circle fa-2x text-muted mb-3"></i>
+                </p>
+                <p class="text-muted">
+                    Are you sure you want to sign out? You'll need to sign in again to access your account.
+                </p>
+                
+                <form method="post" action="{% url 'account_logout' %}">
+                    {% csrf_token %}
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt me-1"></i>Yes, Sign Out
+                        </button>
+                        <a href="{% url 'gallery:album_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

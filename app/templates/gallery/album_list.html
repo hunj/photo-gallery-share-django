@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Albums - Photo Gallery{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-images me-2"></i>Albums</h1>
+    {% if user.is_authenticated %}
+        <a href="{% url 'gallery:album_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Create Album
+        </a>
+    {% endif %}
+</div>
+
+{% if albums %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for album in albums %}
+            <div class="col">
+                <div class="card h-100 album-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ album.title }}</h5>
+                        <p class="card-text text-muted">{{ album.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>{{ album.owner.email }}
+                            </small>
+                            <span class="badge bg-{% if album.is_public %}success{% else %}secondary{% endif %}">
+                                {% if album.is_public %}Public{% else %}Private{% endif %}
+                            </span>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>{{ album.created_at|date:"M d, Y" }}
+                            </small>
+                            <small class="text-muted ms-3">
+                                <i class="fas fa-image me-1"></i>{{ album.get_photo_count }} photos
+                            </small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{% url 'gallery:album_detail' album.pk %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>View Album
+                        </a>
+                        {% if user == album.owner or user.is_superuser %}
+                            <a href="{% url 'gallery:album_update' album.pk %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+        <nav aria-label="Album pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-images fa-3x text-muted mb-3"></i>
+        <h3 class="text-muted">No albums found</h3>
+        <p class="text-muted">{% if user.is_authenticated %}Create your first album to get started!{% else %}Be the first to create an album!{% endif %}</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'gallery:album_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Create Album
+            </a>
+        {% else %}
+            <a href="{% url 'account_login' %}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt me-1"></i>Login to Create
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

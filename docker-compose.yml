@@ -42,6 +42,7 @@ services:
 
   nginx:
     build: ./nginx
+    restart: always
     ports:
       - 18000:80
     depends_on:

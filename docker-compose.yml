@@ -18,6 +18,13 @@ services:
       - 18001:8001
     expose:
       - 8001
+    environment:
+      EMAIL_BACKEND: smtp
+      EMAIL_HOST: mailpit
+      EMAIL_PORT: 1025
+      DEFAULT_FROM_EMAIL: "Photo Gallery <no-reply@localhost>"
+    depends_on:
+      - mailpit
     develop:
       watch:
         - action: sync+restart
@@ -47,6 +54,13 @@ services:
       - 18000:80
     depends_on:
       - app
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - 18002:8025  # Web UI
+      - 1025:1025   # SMTP
 
 volumes:
   postgres_data:
